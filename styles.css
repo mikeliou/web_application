@@ -1,0 +1,30 @@
+﻿.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+}
+
+.img-responsive {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.table-ratings {
+    margin: 0 auto;
+}
+
+.rec-movie-img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.search-movie-img {
+    width: 25%;
+    height: 25%;
+}
