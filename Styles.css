@@ -16,10 +16,15 @@ footer {
 }
 
 .table-ratings {
-    content: '';
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    background-image: url('star.png');
-    background-repeat: no-repeat;
+    margin: 0 auto;
+}
+
+.rec-movie-img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.search-movie-img {
+    width: 25%;
+    height: 25%;
 }
