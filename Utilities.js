@@ -47,15 +47,18 @@
 
                             response(suggestMovies);
                         }
-                        }).fail(function () {
-                            console.log("error in autocomplete request");
-                        });
+                    }).fail(function () {
+                        console.log("error in autocomplete request");
+                    });
                 },
                 select: function (event, ui) {
                     showMovieByTitle(ui.item.label);
                 }
             });
         }
+        else
+            $('#searchResultsContainer').hide(); //hide container if search bar is empty
+
         typingTimer = setTimeout(doneTyping, doneTypingInterval); //when condition is met fires doneTyping()
     });
 
