@@ -9,14 +9,14 @@
         }
     });
 
-    //show top rated movies as recommended
+    //show top rated movies
     var recommendedMovies = ['tt0111161', 'tt0068646', 'tt0071562', 'tt0468569']; //moviesIDs
     var recommendedMoviesTrailers = {
         'The Godfather': 'https://www.youtube.com/embed/sY1S34973zA', 
         'The Shawshank Redemption': 'https://www.youtube.com/embed/6hB3S9bIaco',
         'The Godfather: Part II': 'https://www.youtube.com/embed/9O1Iy9od7-A', 
         'The Dark Knight': 'https://www.youtube.com/embed/EXeTwQWrcwY'
-        }; //trailers
+        }; //trailers per movie
 
     for (var c = 0; c < recommendedMovies.length; c++) {
         $.get("http://www.omdbapi.com", { //get results using API
@@ -30,6 +30,8 @@
 
                 var $containerDiv = $('<div class="rec-container"></div>');
                 $containerDiv.append('<img src="' + data.Poster + '" class="img-responsive rec-movie-img">');
+                
+                //overlay effect for watching trailer
                 $containerDiv.append('<div class="overlay"><a href="#" class="icon" title="Watch trailer" data-url="' + recommendedMoviesTrailers[data.Title] + '" data-toggle="modal" data-target="#myModal"><i class="fa fa-play"></i></a></div>');
 
                 $newDiv.append($containerDiv);
@@ -148,7 +150,7 @@
                 $searchMovieDiv.append($('<p align="left"><b> Box Office: </b>' + data.BoxOffice + '</p>'));
                 $searchMovieDiv.append($('<p align="left"><b> Production: </b>' + data.Production + '</p>'));
                 //if data.Website is not empty or N/A show as link
-                if (data.Website != 'N/A' && data.Website != '') data.Website = '<a href="' + data.Website + '">' + data.Website + '</a>';
+                if (data.Website != 'N/A' && data.Website != '') data.Website = '<a align="left" href="' + data.Website + '">' + data.Website + '</a>';
                 $searchMovieDiv.append($('<p align="left"><b> Website: </b>' + data.Website + '</p>'));
             }
             }).fail(function () {
