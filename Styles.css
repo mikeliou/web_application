@@ -24,7 +24,72 @@ footer {
     cursor: pointer;
 }
 
+.rec-movie-title {
+    font-weight: bold;
+}
+
 .search-movie-img {
     width: 25%;
     height: 25%;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.rec-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    background-color: black;
+}
+
+.rec-container:hover .overlay {
+    opacity: 0.5;
+}
+
+.icon {
+    color: white;
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.fa-user:hover {
+    color: #eee;
+}
+
+#iframeModal {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    display: block;
+}
+
+body {
+    font-family: 'Roboto' !important;
+    font-size: 1.5em !important;
+}
+
+.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
 }

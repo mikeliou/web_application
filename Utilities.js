@@ -11,21 +11,33 @@
 
     //show top rated movies as recommended
     var recommendedMovies = ['tt0111161', 'tt0068646', 'tt0071562', 'tt0468569']; //moviesIDs
-    recommendedMovies.forEach(function (movieID) {
+    var recommendedMoviesTrailers = {
+        'The Godfather': 'https://www.youtube.com/embed/sY1S34973zA', 
+        'The Shawshank Redemption': 'https://www.youtube.com/embed/6hB3S9bIaco',
+        'The Godfather: Part II': 'https://www.youtube.com/embed/9O1Iy9od7-A', 
+        'The Dark Knight': 'https://www.youtube.com/embed/EXeTwQWrcwY'
+        }; //trailers
+
+    for (var c = 0; c < recommendedMovies.length; c++) {
         $.get("http://www.omdbapi.com", { //get results using API
             apikey: '397d19a0',
-            i: movieID
+            i: recommendedMovies[c]
         }, function (data, status) {
             if (data.Response == "True" && status == "success") { //check response and status of request
                 //create a new div on the fly for each movie
-                var $newDiv = $('<div class="col-sm-3"></div >');
+                var $newDiv = $('<div class="col-sm-3"></div>');
                 $newDiv.append($('<p class="rec-movie-title">' + data.Title + '</p>' + '<p>' + '(' + data.Year + ', ' + data.Runtime + ')' + '</p>'));
-                $newDiv.append('<img src="' + data.Poster + '" class="img-responsive rec-movie-img">');
+
+                var $containerDiv = $('<div class="rec-container"></div>');
+                $containerDiv.append('<img src="' + data.Poster + '" class="img-responsive rec-movie-img">');
+                $containerDiv.append('<div class="overlay"><a href="#" class="icon" title="Watch trailer" data-url="' + recommendedMoviesTrailers[data.Title] + '" data-toggle="modal" data-target="#myModal"><i class="fa fa-play"></i></a></div>');
+
+                $newDiv.append($containerDiv);
 
                 $('#recommendedMovies').append($newDiv); //append new div to recommendedMovies container
             }
         });
-    });
+    };
 
     //show autocomplete suggestions for movies while user is typing
     $("#searchMovieInput").keyup(function () { //trigger event on keyup while searching a movie
@@ -109,11 +121,11 @@
         });
     }
 
-    //when user clicks on a poster of recommended movies show details of movie
-    $(document).on('click', '.rec-movie-img', function () {
-        var imageTitle = $(this).parent().find('p.rec-movie-title').text();
+    //when user clicks on a poster of recommended movies show trailer on modal
+    $(document).on('click', '.icon', function () {
+        var url = $(this).data('url');
 
-        showMovieByTitle(imageTitle);
+        $('#iframeModal').attr('src', url);
     });
 
     //when user presses Read More show extra info
