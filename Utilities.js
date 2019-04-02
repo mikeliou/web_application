@@ -159,4 +159,55 @@
         return false; //return false to avoid reloading page
     });
 
+    $('#formLogin').submit(function (event) {
+        let formArray = $('#formLogin').serializeArray();
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://localhost:8085/api/user/login",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json",
+              "cache-control": "no-cache",
+              "Postman-Token": "d1d26528-acaa-4a4e-a1fa-a6100142ba5f"
+            },
+            "processData": false,
+            "data": "{\n\t\"username\": \"mike\",\n\t\"password\": \"liou\"\n}"
+          }
+          
+          $.ajax(settings).done(function (response) {
+            console.log(response);
+          });
+
+        debugger;
+
+        /*$.post("http://localhost:8085/api/user/login", { //send post request to login
+            username: formArray.find(o => o.name === 'username').value,
+            password: formArray.find(o => o.name === 'password').value
+        }, function (response) {
+            debugger;
+            alert('hey');
+        }).fail(function () {
+            debugger;
+            console.log("error in readmore request");
+        });*/
+
+        //event.preventDefault();
+    });
+
+    $('#formSignup').submit(function (event) {
+        let formArray = $('#formSignup').serializeArray();
+
+        $.post("http://localhost", { //send post request to login
+            firstName: formArray.find(o => o.name === 'firstName').value,
+            lastName: formArray.find(o => o.name === 'lastName').value
+        }, function () {
+            alert('hey');
+        }).fail(function () {
+            console.log("error in readmore request");
+        });
+
+        //event.preventDefault();
+    });
 });
