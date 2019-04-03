@@ -37,6 +37,22 @@ footer {
     backface-visibility: hidden;
 }
 
+.similar-movie-img {
+    width: 25%;
+    height: 25%;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.similar-movie-img:hover {
+    cursor: pointer;
+    width: 20%;
+    height: 20%;
+    opacity: 0.5;
+}
+
 .rec-container {
     position: relative;
     width: 100%;
@@ -104,6 +120,23 @@ body {
     z-index: 1020;
 }
 
+.nav-link {
+    margin: 15px auto;
+}
+
+.nav-link:link, .nav-link:visited {
+    background-color: #696969;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-link:hover, .nav-link:active {
+    background-color: #808080;
+}
+
 #searchMovieInput {
     width: 30%;
     box-sizing: border-box;
@@ -134,4 +167,9 @@ body {
 
 #searchResultsContainer {
     display: table;
+}
+
+#similarMoviesDiv {
+    background-color: #f2f2f2;
+    margin: 50px auto;
 }

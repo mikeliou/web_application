@@ -113,15 +113,58 @@
                 $newDiv.append($('<p align="left"><b> Writer: </b>' + data.Writer + '</p>'));
                 $newDiv.append($('<p align="left"><b> Actors: </b>' + data.Actors + '</p>'));
                 $newDiv.append($('<a id="textReadMore" href="#">Read more...</a>'));
-                $newDiv.append($('<p id="searchMovieID" hidden>' + data.imdbID + '</p>'));
+
+                $newDiv.append($('<p id="searchMovieID" hidden>' + data.imdbID.trim() + '</p>'));
 
                 //append new div to searchResults container
                 $('#searchResults').append($newDiv);
+
+                $.get("http://www.omdbapi.com", { //get similar movies results using API
+                    apikey: '397d19a0',
+                    s: movieTitle
+                }, function (similarMoviesData, similarMoviesStatus) {
+                    if (similarMoviesData.Response == "True" && similarMoviesStatus == "success") {
+                        $('#similarMoviesDiv').empty(); //clear previous results
+
+                        //create similar movies div
+                        var $similarMoviesDiv = $('<div class="col-sm-12" id="similarMoviesDiv"></div>');
+                        $similarMoviesDiv.append($('<h3>More search results: </h3>'));
+
+                        //create table to show similar movies, first row = titles, second row = posters
+                        var $tableSimilarMovies = ($('<table id="similarMoviesTable"></table>'));
+                        var $rowTitle = $('<tr></tr>');
+                        for (i = 0; i < similarMoviesData.Search.length; i++) {
+                            $rowTitle.append($('<td><p>' + similarMoviesData.Search[i].Title + '</p></td>'));
+                        }
+                        $tableSimilarMovies.append($rowTitle);
+
+                        var $rowPoster = $('<tr></tr>');
+                        for (i = 0; i < similarMoviesData.Search.length; i++) {
+                            $rowPoster.append('<td><img src="' + similarMoviesData.Search[i].Poster + '" class="img-responsive similar-movie-img" data-title="' + similarMoviesData.Search[i].Title + '"></td>');
+                        }
+                        $tableSimilarMovies.append($rowPoster);
+
+                        $similarMoviesDiv.append($tableSimilarMovies);
+                        $('#searchResults').append($similarMoviesDiv);
+
+                        //create pages for all similar movies
+                        paginateTable();
+                    }
+                }).fail(function () {
+                    console.log("error in similar movies request");
+                });
             }
         }).fail(function () {
             console.log("error in showmovie request");
         });
     }
+
+    //when user clicks on a similar movie, show that movie
+    $(document).on('click', '.similar-movie-img', function () {
+        var similarMovieTitle = $(this).data('title');
+
+        showMovieByTitle(similarMovieTitle);
+    });
 
     //when user clicks on a poster of recommended movies show trailer on modal
     $(document).on('click', '.icon', function () {
@@ -162,36 +205,14 @@
     $('#formLogin').submit(function (event) {
         let formArray = $('#formLogin').serializeArray();
 
-        var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "http://localhost:8085/api/user/login",
-            "method": "POST",
-            "headers": {
-              "Content-Type": "application/json",
-              "cache-control": "no-cache",
-              "Postman-Token": "d1d26528-acaa-4a4e-a1fa-a6100142ba5f"
-            },
-            "processData": false,
-            "data": "{\n\t\"username\": \"mike\",\n\t\"password\": \"liou\"\n}"
-          }
-          
-          $.ajax(settings).done(function (response) {
-            console.log(response);
-          });
-
-        debugger;
-
-        /*$.post("http://localhost:8085/api/user/login", { //send post request to login
+        $.post("http://localhost", { //send post request to login
             username: formArray.find(o => o.name === 'username').value,
             password: formArray.find(o => o.name === 'password').value
-        }, function (response) {
-            debugger;
+        }, function () {
             alert('hey');
         }).fail(function () {
-            debugger;
             console.log("error in readmore request");
-        });*/
+        });
 
         //event.preventDefault();
     });
@@ -210,4 +231,44 @@
 
         //event.preventDefault();
     });
+
+    //paginate table to not show all similar movies in one page
+    function paginateTable() {
+        $('#similarMoviesTable').after('<div id="nav"></div>');
+        var $tableRows = $('#similarMoviesTable tr');
+        if ($tableRows.length > 0) {
+            var moviesTotal = $('td', $tableRows[0]).length;
+            var moviesShown = 4;
+            var numPages = moviesTotal / moviesShown;
+            for (i = 0; i < numPages; i++) {
+                //create links with page numbers
+                var pageNum = i + 1;
+                $('#nav').append('<a href="#" rel="' + i + '" class="nav-link">' + pageNum + '</a> ');
+            }
+
+            //hide all movies
+            $('#similarMoviesTable td').hide();
+            $tableRows.each(function () {
+                $('td', this).slice(0, moviesShown).show();
+            });
+            
+            $('#nav a:first').addClass('active');
+            $('#nav a').bind('click', function () {
+                //on page number click show only that range of movies
+                $('#nav a').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                var startItem = currPage * moviesShown;
+                var endItem = startItem + moviesShown;
+
+                $tableRows.each(function () {
+                    $('td', this).css('opacity', '0.0').hide().slice(startItem, endItem).
+                        css('display', 'table-cell').animate({ opacity: 1 }, 300);
+                });
+
+                return false;
+            });
+        }
+        
+    }
 });
