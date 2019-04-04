@@ -93,7 +93,8 @@
 
                 //create a new div with movie info on the fly
                 var $newDiv = $('<div class="col-sm-12" id="searchMovieDiv"></div>');
-                $newDiv.append($('<h4>' + data.Title + '</h4>' + '(' + data.Year + ')'));
+                $newDiv.append($('<div class="headline"><h4><b>' + data.Title + '</b></h4>' + ' (' + data.Year + ')' +
+                                 '<img id="imgIsBookmark" src="heart-blank.png" /></div>'));
                 $newDiv.append($('<h5>' + data.Type + ' | ' + data.Runtime + ' | ' + data.Genre + ' | ' + data.Released + '</h5>'));
 
                 //iterate through data.Ratings object to show all ratings
@@ -134,7 +135,7 @@
                         var $tableSimilarMovies = ($('<table id="similarMoviesTable"></table>'));
                         var $rowTitle = $('<tr></tr>');
                         for (i = 0; i < similarMoviesData.Search.length; i++) {
-                            $rowTitle.append($('<td><p>' + similarMoviesData.Search[i].Title + '</p></td>'));
+                            $rowTitle.append($('<td><p><b>' + similarMoviesData.Search[i].Title + '</b></p></td>'));
                         }
                         $tableSimilarMovies.append($rowTitle);
 

@@ -101,6 +101,17 @@ footer {
     padding: 20px;
 }
 
+.headline h4, .headline p {
+    display: inline;
+    vertical-align: top;
+}
+
+#imgIsBookmark {
+    height: 25px;
+    width: 35px;
+    padding-left: 10px;
+}
+
 #iframeModal {
     height: 100%;
     width: 100%;
