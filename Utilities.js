@@ -1,4 +1,5 @@
-﻿$(function () {
+﻿var userkey = '473013cf-b95a-49bd-8148-48bcb2593e43';
+$(function () {
     var typingTimer; //time identifier
     var doneTypingInterval = 500; //time in ms for getting search results
 
@@ -18,7 +19,7 @@
         'The Dark Knight': 'https://www.youtube.com/embed/EXeTwQWrcwY'
         }; //trailers per movie
 
-    for (var c = 0; c < recommendedMovies.length; c++) {
+    for (let c = 0; c < recommendedMovies.length; c++) {
         $.get("http://www.omdbapi.com", { //get results using API
             apikey: '397d19a0',
             i: recommendedMovies[c]
@@ -94,9 +95,10 @@
                 //create a new div with movie info on the fly
                 var $newDiv = $('<div class="col-sm-12" id="searchMovieDiv"></div>');
                 $newDiv.append($('<div class="headline"><h4><b>' + data.Title + '</b></h4>' + ' (' + data.Year + ')' +
-                                 '<img id="imgIsBookmark" src="heart-blank.png" /></div>'));
+                                 '<img id="imgIsBookmark" src="heart-blank.png" title="Add to Bookmarks" /></div>'));
                 $newDiv.append($('<h5>' + data.Type + ' | ' + data.Runtime + ' | ' + data.Genre + ' | ' + data.Released + '</h5>'));
 
+                checkMovieIsBookmarked(data.imdbID.trim());
                 //iterate through data.Ratings object to show all ratings
                 var $listRatings = ($('<table class="table-ratings"></table>'));
                 data.Ratings.forEach(function (rating) {
@@ -135,12 +137,16 @@
                         var $tableSimilarMovies = ($('<table id="similarMoviesTable"></table>'));
                         var $rowTitle = $('<tr></tr>');
                         for (i = 0; i < similarMoviesData.Search.length; i++) {
+                            if (similarMoviesData.Search[i].Title == data.Title)
+                                continue;
                             $rowTitle.append($('<td><p><b>' + similarMoviesData.Search[i].Title + '</b></p></td>'));
                         }
                         $tableSimilarMovies.append($rowTitle);
 
                         var $rowPoster = $('<tr></tr>');
                         for (i = 0; i < similarMoviesData.Search.length; i++) {
+                            if (similarMoviesData.Search[i].Title == data.Title)
+                                continue;
                             $rowPoster.append('<td><img src="' + similarMoviesData.Search[i].Poster + '" class="img-responsive similar-movie-img" data-title="' + similarMoviesData.Search[i].Title + '"></td>');
                         }
                         $tableSimilarMovies.append($rowPoster);
@@ -163,6 +169,7 @@
     //when user clicks on a similar movie, show that movie
     $(document).on('click', '.similar-movie-img', function () {
         var similarMovieTitle = $(this).data('title');
+        $("#searchMovieInput").val(similarMovieTitle);
 
         showMovieByTitle(similarMovieTitle);
     });
@@ -204,56 +211,101 @@
     });
 
     $('MyBookmarks.html').ready(function () {
+        let carouselMovies = [];
+        $.get("http://localhost:8085/api/bookmark/" + userkey, {
+        }, function (allBookmarks) {
+            allBookmarks.forEach(function (bookmark) {
+                carouselMovies.push(bookmark.movieId);
+            });
 
-        //************************************CHANGE TO API CALL*************************
-        let carouselMovies = ['tt0111161', 'tt0068646', 'tt0071562', 'tt0468569', 'tt1375666', 'tt1130884'];
-        //*******************************************************************************
+            let arraySavedBookmarks = [];
+            for (let c = 0; c < carouselMovies.length; c++) {
+                $.get("http://www.omdbapi.com", { //get results using API
+                    apikey: '397d19a0',
+                    i: carouselMovies[c]
+                }, function (data, status) {
+                    if (data.Response == "True" && status == "success") { //check response and status of request
+                        if (c == 0)
+                            $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '" class="active"></li>');
+                        else
+                            $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '"></li>');
 
-        let arraySavedBookmarks = [];
-        for (let c = 0; c < carouselMovies.length; c++) {
-            $.get("http://www.omdbapi.com", { //get results using API
-                apikey: '397d19a0',
-                i: carouselMovies[c]
-            }, function (data, status) {
-                if (data.Response == "True" && status == "success") { //check response and status of request
-                    if (c == 0)
-                        $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '" class="active"></li>');
-                    else
-                        $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '"></li>');
+                        let $divCarousel = $('.carousel-inner');
 
-                    let $divCarousel = $('.carousel-inner');
+                        if (c == 0)
+                            var $divItem = $('<div class="item active"></div>');
+                        else
+                            var $divItem = $('<div class="item"></div>');
 
-                    if (c == 0)
-                        var $divItem = $('<div class="item active"></div>');
-                    else
-                        var $divItem = $('<div class="item"></div>');
+                        let $imgMovie = $('<img src="' + data.Poster + '" />');
+                        $divItem.append($imgMovie);
 
-                    let $imgMovie = $('<img src="' + data.Poster + '" />');
-                    $divItem.append($imgMovie);
+                        //var $divCarouselCaption = $('<div class="carousel-caption"><h3>' + data.Title + '</h3><p>' + data.Plot + '</p ></div > ');
+                        //$divItem.append($divCarouselCaption);
 
-                    //var $divCarouselCaption = $('<div class="carousel-caption"><h3>' + data.Title + '</h3><p>' + data.Plot + '</p ></div > ');
-                    //$divItem.append($divCarouselCaption);
+                        $divCarousel.append($divItem);
 
-                    $divCarousel.append($divItem);
-
-                    let $divBookmarkMovie = $('<div class="col-sm-4"><p class="rec-movie-title">' + data.Title + '</p><img src="' + data.Poster + '" /></div>');
-                    arraySavedBookmarks.push($divBookmarkMovie);
-
-                    if (c == carouselMovies.length - 1) {
-                        let $divSavedBookmarks = $('#savedBookmarksDiv');
-
-                        for (let i = 0, j = arraySavedBookmarks.length; i < j; i += 3) {
-                            let temparray = arraySavedBookmarks.slice(i, i + 3);
-
-                            $rowSavedBookmarks = $('<div class="row"></div>')
-                            temparray.forEach(function ($tempitem) {
-                                $rowSavedBookmarks.append($tempitem);
-                            });
-
-                            $divSavedBookmarks.append($rowSavedBookmarks);
-                        }
+                        let $divBookmarkMovie = $('<div class="col-sm-4"><p class="rec-movie-title">' + data.Title + '</p><img src="' + data.Poster + '" /></div>');
+                        arraySavedBookmarks.push($divBookmarkMovie);
                         
+                        if (arraySavedBookmarks.length == carouselMovies.length) {
+                            let $divSavedBookmarks = $('#savedBookmarksDiv');
+
+                            for (let i = 0, j = arraySavedBookmarks.length; i < j; i += 3) {
+                                let temparray = arraySavedBookmarks.slice(i, i + 3);
+
+                                $rowSavedBookmarks = $('<div class="row"></div>')
+                                temparray.forEach(function ($tempitem) {
+                                    $rowSavedBookmarks.append($tempitem);
+                                });
+
+                                $divSavedBookmarks.append($rowSavedBookmarks);
+                            }
+                            
+                        }
                     }
+                });
+            }
+        });
+        
+    });
+
+    $(document).on('click', '#imgIsBookmark', function () {
+        debugger;
+        let isBookmark = ($('#imgIsBookmark').attr('src') == 'heart-blank.png') ? false : true;
+        
+        if (!isBookmark) {
+            jQuery.ajax ({
+                url: "http://localhost:8085/api/bookmark",
+                type: "POST",
+                data: JSON.stringify({
+                                        movieId: $('#searchMovieID').text(),
+                                        userkey: userkey
+                                    }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(){
+                    $('#imgIsBookmark').attr('src', 'heart-full.png');
+                    $('#imgIsBookmark').attr('title', 'Add to Bookmarks');
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("error in form login: " + errorThrown);
+                }
+            });
+        }
+        else {
+            jQuery.ajax ({
+                url: "http://localhost:8085/api/bookmark/" + userkey + "/" + $('#searchMovieID').text(),
+                type: "DELETE",
+                data: {},
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(){
+                    $('#imgIsBookmark').attr('src', 'heart-blank.png');
+                    $('#imgIsBookmark').attr('title', 'Remove from Bookmarks');
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("error in form login: " + errorThrown);
                 }
             });
         }
@@ -261,32 +313,57 @@
 
     $('#formLogin').submit(function (event) {
         let formArray = $('#formLogin').serializeArray();
+        $('#labelLogin').empty();
 
-        $.post("http://localhost", { //send post request to login
-            username: formArray.find(o => o.name === 'username').value,
-            password: formArray.find(o => o.name === 'password').value
-        }, function () {
-            alert('hey');
-        }).fail(function () {
-            console.log("error in readmore request");
+        jQuery.ajax ({
+            url: "http://localhost:8085/api/user/login",
+            type: "POST",
+            data: JSON.stringify({
+                                    email: formArray.find(o => o.name === 'email').value, 
+                                    password: formArray.find(o => o.name === 'password').value
+                                }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function(response){
+                
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.responseJSON.hasError)
+                    $('#labelLogin').text(XMLHttpRequest.responseJSON.errorMessage);
+                console.log("error in form login: " + errorThrown);
+            }
         });
 
-        //event.preventDefault();
+        return false;
     });
 
     $('#formSignup').submit(function (event) {
         let formArray = $('#formSignup').serializeArray();
+        $('#labelSignup').empty();
 
-        $.post("http://localhost", { //send post request to login
-            firstName: formArray.find(o => o.name === 'firstName').value,
-            lastName: formArray.find(o => o.name === 'lastName').value
-        }, function () {
-            alert('hey');
-        }).fail(function () {
-            console.log("error in readmore request");
+        jQuery.ajax ({
+            url: "http://localhost:8085/api/user/signup",
+            type: "POST",
+            data: JSON.stringify({
+                                    email: formArray.find(o => o.name === 'email').value, 
+                                    password: formArray.find(o => o.name === 'password').value,
+                                    confirmPassword: formArray.find(o => o.name === 'confirmPassword').value,
+                                    firstname: formArray.find(o => o.name === 'firstName').value, 
+                                    lastname: formArray.find(o => o.name === 'lastName').value
+                                }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function(){
+                
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.responseJSON.hasError)
+                    $('#labelSignup').text(XMLHttpRequest.responseJSON.errorMessage);
+                console.log("error in form login: " + errorThrown);
+            }
         });
 
-        //event.preventDefault();
+        return false;
     });
 
     //paginate table to not show all similar movies in one page
@@ -326,6 +403,18 @@
                 return false;
             });
         }
-        
     }
+
+    function checkMovieIsBookmarked(movieID) {
+        $.get("http://localhost:8085/api/bookmark/" + userkey, {
+        }, function (allBookmarks) {
+            allBookmarks.forEach(function (bookmark) {
+                if (bookmark.movieId == movieID) {
+                    $('#imgIsBookmark').attr('src', 'heart-full.png');
+                    $('#imgIsBookmark').attr('title', 'Remove from Bookmarks');
+                }
+            });
+        });
+    }
+
 });

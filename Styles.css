@@ -112,6 +112,10 @@ footer {
     padding-left: 10px;
 }
 
+#imgIsBookmark:hover {
+    cursor: pointer;
+}
+
 #iframeModal {
     height: 100%;
     width: 100%;
@@ -193,4 +197,11 @@ body {
 
 #savedBookmarksDiv .row {
     margin-top: 10px;
+}
+
+#labelLogin, #labelSignup {
+    display: block;
+    text-align: center;
+    font-size: 0.7em;
+    color: red;
 }
