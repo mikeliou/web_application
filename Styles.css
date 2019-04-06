@@ -184,3 +184,13 @@ body {
     background-color: #f2f2f2;
     margin: 50px auto;
 }
+
+.carousel-inner img {
+    height: 10%;
+    width: 20%;
+    margin: auto;
+}
+
+#savedBookmarksDiv .row {
+    margin-top: 10px;
+}

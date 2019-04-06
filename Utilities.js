@@ -203,6 +203,62 @@
         return false; //return false to avoid reloading page
     });
 
+    $('MyBookmarks.html').ready(function () {
+
+        //************************************CHANGE TO API CALL*************************
+        let carouselMovies = ['tt0111161', 'tt0068646', 'tt0071562', 'tt0468569', 'tt1375666', 'tt1130884'];
+        //*******************************************************************************
+
+        let arraySavedBookmarks = [];
+        for (let c = 0; c < carouselMovies.length; c++) {
+            $.get("http://www.omdbapi.com", { //get results using API
+                apikey: '397d19a0',
+                i: carouselMovies[c]
+            }, function (data, status) {
+                if (data.Response == "True" && status == "success") { //check response and status of request
+                    if (c == 0)
+                        $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '" class="active"></li>');
+                    else
+                        $('.carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + c + '"></li>');
+
+                    let $divCarousel = $('.carousel-inner');
+
+                    if (c == 0)
+                        var $divItem = $('<div class="item active"></div>');
+                    else
+                        var $divItem = $('<div class="item"></div>');
+
+                    let $imgMovie = $('<img src="' + data.Poster + '" />');
+                    $divItem.append($imgMovie);
+
+                    //var $divCarouselCaption = $('<div class="carousel-caption"><h3>' + data.Title + '</h3><p>' + data.Plot + '</p ></div > ');
+                    //$divItem.append($divCarouselCaption);
+
+                    $divCarousel.append($divItem);
+
+                    let $divBookmarkMovie = $('<div class="col-sm-4"><p class="rec-movie-title">' + data.Title + '</p><img src="' + data.Poster + '" /></div>');
+                    arraySavedBookmarks.push($divBookmarkMovie);
+
+                    if (c == carouselMovies.length - 1) {
+                        let $divSavedBookmarks = $('#savedBookmarksDiv');
+
+                        for (let i = 0, j = arraySavedBookmarks.length; i < j; i += 3) {
+                            let temparray = arraySavedBookmarks.slice(i, i + 3);
+
+                            $rowSavedBookmarks = $('<div class="row"></div>')
+                            temparray.forEach(function ($tempitem) {
+                                $rowSavedBookmarks.append($tempitem);
+                            });
+
+                            $divSavedBookmarks.append($rowSavedBookmarks);
+                        }
+                        
+                    }
+                }
+            });
+        }
+    });
+
     $('#formLogin').submit(function (event) {
         let formArray = $('#formLogin').serializeArray();
 
