@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    password: mikeliou
+    username: root
+    url: jdbc:mysql://localhost:3306/movies?useSSL=false
+    driverClassName: com.mysql.jdbc.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8085

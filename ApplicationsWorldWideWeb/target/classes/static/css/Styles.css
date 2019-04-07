@@ -1,0 +1,207 @@
+﻿.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+}
+
+.img-responsive {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.table-ratings {
+    margin: 0 auto;
+}
+
+.rec-movie-img {
+    width: 100%;
+    cursor: pointer;
+}
+
+.rec-movie-title {
+    font-weight: bold;
+}
+
+.search-movie-img {
+    width: 25%;
+    height: 25%;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.similar-movie-img {
+    width: 25%;
+    height: 25%;
+    opacity: 1;
+    display: block;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.similar-movie-img:hover {
+    cursor: pointer;
+    width: 20%;
+    height: 20%;
+    opacity: 0.5;
+}
+
+.rec-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    background-color: black;
+}
+
+.rec-container:hover .overlay {
+    opacity: 0.5;
+}
+
+.icon {
+    color: white;
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.fa-user:hover {
+    color: #eee;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+}
+
+.headline h4, .headline p {
+    display: inline;
+    vertical-align: top;
+}
+
+#imgIsBookmark {
+    height: 25px;
+    width: 35px;
+    padding-left: 10px;
+}
+
+#imgIsBookmark:hover {
+    cursor: pointer;
+}
+
+#iframeModal {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    display: block;
+}
+
+body {
+    font-family: 'Roboto' !important;
+    font-size: 1.5em !important;
+}
+
+.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.nav-link {
+    margin: 15px auto;
+}
+
+.nav-link:link, .nav-link:visited {
+    background-color: #696969;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-link:hover, .nav-link:active {
+    background-color: #808080;
+}
+
+#searchMovieInput {
+    width: 30%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+#searchMovieInput:focus {
+    width: 50%;
+}
+
+#search-icon {
+    position: relative;
+    z-index: 1;
+    right: -20px;
+    top: 1px;
+    color: #7B7B7B;
+    cursor:pointer;
+    width: 0;
+}
+
+#searchResultsContainer {
+    display: table;
+}
+
+#similarMoviesDiv {
+    background-color: #f2f2f2;
+    margin: 50px auto;
+}
+
+.carousel-inner img {
+    height: 10%;
+    width: 20%;
+    margin: auto;
+}
+
+#savedBookmarksDiv .row {
+    margin-top: 10px;
+}
+
+#labelLogin, #labelSignup {
+    display: block;
+    text-align: center;
+    font-size: 0.7em;
+    color: red;
+}
